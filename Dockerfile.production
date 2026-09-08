@@ -1,0 +1,38 @@
+FROM oven/bun:1.4 AS base
+
+WORKDIR /app
+
+COPY package.json bun.lock tsconfig.json eslint.config.js ./
+COPY apps/web/package.json apps/web/package.json
+COPY apps/api/package.json apps/api/package.json
+COPY apps/cluster-agent/package.json apps/cluster-agent/package.json
+COPY packages/config/package.json packages/config/package.json
+COPY packages/db/package.json packages/db/package.json
+COPY packages/shared/package.json packages/shared/package.json
+
+RUN bun install --frozen-lockfile
+
+COPY . .
+
+FROM base AS web-build
+ARG NEXT_PUBLIC_API_URL=http://localhost:4000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+RUN bun run --filter @hpc/web build
+
+FROM web-build AS web
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+EXPOSE 3000
+CMD ["bun", "run", "--filter", "@hpc/web", "start"]
+
+FROM base AS api
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+EXPOSE 4000
+CMD ["sh", "-c", "bun packages/db/src/migrate.ts && bun run --filter @hpc/api start"]
+
+FROM base AS agent
+ENV NODE_ENV=production
+ENV CLUSTER_AGENT_HOST=0.0.0.0
+EXPOSE 4001
+CMD ["bun", "run", "--filter", "@hpc/cluster-agent", "start"]
