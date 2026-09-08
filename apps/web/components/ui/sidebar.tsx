@@ -71,7 +71,7 @@ function Sidebar({ className, children, ...props }: React.ComponentProps<"aside"
       data-slot="sidebar"
       data-state={open ? "expanded" : "collapsed"}
       className={cn(
-        "fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-200 md:static md:z-auto md:shadow-none md:transition-[width]",
+        "fixed inset-y-0 left-0 z-40 flex h-dvh max-h-dvh w-64 shrink-0 flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-200 md:shadow-none md:transition-[width]",
         mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
         open ? "md:w-64" : "md:w-16",
         className,
@@ -87,7 +87,7 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
   return (
     <main
       data-slot="sidebar-inset"
-      className={cn("min-w-0 flex-1", className)}
+      className={cn("min-w-0 flex-1 md:ml-64", className)}
       {...props}
     />
   );

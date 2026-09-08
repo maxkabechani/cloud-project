@@ -25,11 +25,13 @@ export const vmCreateSchema = z.object({
   cpu: z.union([z.literal(1), z.literal(2), z.literal(4)]),
   memoryMb: z.union([z.literal(512), z.literal(1024), z.literal(2048), z.literal(4096)]),
   diskGb: z.union([z.literal(5), z.literal(10), z.literal(20)]),
+  placement: z.enum(["automatic", "manual"]).default("automatic"),
+  nodeId: z.preprocess((value) => value === "" ? undefined : value, z.string().trim().min(1).max(64).optional()),
 });
 
 export type VmStatus = "pending" | "running" | "stopped" | "error" | "deleting" | "unknown";
 export type NodeStatus = "online" | "offline" | "unknown";
-export type JobStatus = "queued" | "running" | "completed" | "failed" | "cancelled";
+export type JobStatus = "queued" | "starting" | "running" | "completed" | "failed" | "cancelled";
 
 export interface VirtualMachine {
   id: string;
@@ -59,6 +61,8 @@ export interface ClusterNode {
   diskUsage: number;
   cpuCores: number;
   memoryMb: number;
+  usedMemoryMb: number;
+  runningVmCount: number;
   uptime: string;
   lastSeen: string;
 }
@@ -103,9 +107,67 @@ export interface MpiJob {
   name: string;
   program: "matrix-multiply" | "calculate-pi" | "vector-addition";
   processCount: number;
+  nodeSelection: "automatic" | string[];
+  nodesUsed: string[];
   status: JobStatus;
   output: string | null;
+  error: string | null;
+  executionTimeMs: number | null;
   startedAt: string | null;
   completedAt: string | null;
   createdAt: string;
 }
+
+export type MpiProgramId = MpiJob["program"];
+
+export interface MpiProgram {
+  id: MpiProgramId;
+  name: string;
+  description: string;
+  defaultExecutionTimeMs: number;
+}
+
+export interface BenchmarkRun {
+  id: string;
+  benchmarkId: string;
+  processCount: number;
+  nodeCount: number;
+  executionTimeMs: number;
+  status: "queued" | "running" | "completed" | "failed";
+  result: string | null;
+  createdAt: string;
+}
+
+export interface Benchmark {
+  id: string;
+  userId: string;
+  userName: string;
+  program: MpiProgramId;
+  status: "running" | "completed" | "failed";
+  createdAt: string;
+  completedAt: string | null;
+  runs: BenchmarkRun[];
+}
+
+export interface Notification {
+  id: string;
+  userId: string | null;
+  title: string;
+  message: string;
+  type: "success" | "info" | "warning" | "error";
+  read: boolean;
+  createdAt: string;
+}
+
+export const mpiProgramSchema = z.enum(["calculate-pi", "matrix-multiply", "vector-addition"]);
+export const mpiProcessCountSchema = z.number().int().min(1).max(64);
+export const submitMpiJobSchema = z.object({
+  name: z.string().trim().min(2).max(60),
+  program: mpiProgramSchema,
+  processCount: mpiProcessCountSchema,
+  nodeSelection: z.union([z.literal("automatic"), z.array(z.string().trim().min(1).max(64)).max(16)]).default("automatic"),
+});
+export const benchmarkCreateSchema = z.object({
+  program: mpiProgramSchema,
+  processCounts: z.array(mpiProcessCountSchema).min(1).max(8),
+});

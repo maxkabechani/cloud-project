@@ -14,6 +14,7 @@ const environmentSchema = z.object({
   DATABASE_URL: z.string().optional(),
   SQLITE_PATH: z.string().optional(),
   CLOUD_PROVIDER: z.enum(["mock", "opennebula"]).default("mock"),
+  DEMO_DATA: z.enum(["true", "false"]).default("false"),
   CLUSTER_AGENT_URL: optionalUrl,
   CLUSTER_AGENT_API_KEY: optionalSecret,
   BETTER_AUTH_SECRET: z.string().min(32),

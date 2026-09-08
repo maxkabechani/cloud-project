@@ -40,6 +40,7 @@ services:
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://hpc-api.inbines.com}
       WEB_URL: ${WEB_URL:-https://hpc.inbines.com}
       CLOUD_PROVIDER: ${CLOUD_PROVIDER:-mock}
+      DEMO_DATA: ${DEMO_DATA:-true}
       CLUSTER_AGENT_URL: http://agent:4001
       CLUSTER_AGENT_API_KEY: ${CLUSTER_AGENT_API_KEY:?CLUSTER_AGENT_API_KEY is required}
       ADMIN_NAME: ${ADMIN_NAME:-HPC Administrator}

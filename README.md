@@ -137,6 +137,7 @@ bun.lock                  Reproducible Bun dependency lockfile
 | App | Variable                                  | Purpose                                              |
 | --- | ----------------------------------------- | ---------------------------------------------------- |
 | API | DATABASE_PROVIDER                         | sqlite (default) or postgres                         |
+| API | DEMO_DATA                                 | Seed mock VM, MPI, and benchmark data for demos      |
 | API | SQLITE_PATH                               | Local file path; defaults to .local/hpc-cloud.sqlite |
 | API | DATABASE_URL                              | Required only for PostgreSQL                         |
 | API | BETTER_AUTH_SECRET                        | At least 32 characters of random secret material     |
@@ -171,6 +172,37 @@ bun run build
 ```
 
 SQLite tests apply real migrations to a temporary file and exercise registration, role restrictions, origin protection, login/logout, and persistence across close/reopen. PostgreSQL tests run the real auth routes against PGlite with the committed PostgreSQL SQL. They also verify session protection and password hashing. Field-parity tests catch divergent auth schemas. These do not replace an eventual external PostgreSQL deployment smoke test or browser end-to-end tests.
+
+## Provider integration
+
+## MPI Jobs
+
+MPI workloads are submitted only as predefined programs. The browser sends a program identifier and validated process count to the public API. The API authorizes the user and forwards the controlled request to the private cluster agent, which will eventually invoke the approved MPI program with `mpirun` across the Beowulf nodes.
+
+```text
+Website → Fastify API → Cluster Agent → mpirun → Beowulf nodes
+```
+
+The browser never sends shell commands, executable paths, or raw arguments. Local development uses the deterministic mock MPI provider, so jobs can be demonstrated before the physical cluster is connected.
+
+## Performance Benchmarking
+
+Benchmarks execute the same approved workload at several process counts and record each run. If `T1` is the single-process execution time and `Tp` is the parallel execution time:
+
+```text
+Speedup:   S(p) = T1 / Tp
+Efficiency: E(p) = S(p) / p
+```
+
+The results show the performance benefit of parallel execution and its limitations: communication, coordination, and scheduling overhead can reduce efficiency as the process count increases.
+
+## Smart VM Placement
+
+Automatic VM placement evaluates online nodes using available CPU, available RAM, and running VM count. The provider selects the least-loaded suitable node and returns the final host to the dashboard. Manual placement is limited to registered online nodes.
+
+When OpenNebula is active, its scheduler may remain authoritative. The dashboard will display the placement returned by the provider rather than attempting to override platform scheduling.
+
+The cluster agent accepts future MPI configuration through `MPI_USER`, `MPI_HOSTFILE`, and `MPI_PROGRAM_DIRECTORY`. These values are intentionally environment-driven and are not assumed to exist on the development machine.
 
 ## Provider integration
 

@@ -37,4 +37,18 @@ describe("cluster agent control plane", () => {
     expect(created.statusCode).toBe(201);
     expect(created.json().status).toBe("active");
   });
+
+  it("exposes only approved MPI programs and rejects unsafe input", async () => {
+    const headers = { authorization: `Bearer ${key}` };
+    const programs = await app.inject({ method: "GET", url: "/mpi/programs", headers });
+    expect(programs.statusCode).toBe(200);
+    expect(programs.json().programs.map((program: { id: string }) => program.id)).toEqual(["calculate-pi", "matrix-multiply", "vector-addition"]);
+    const unsafe = await app.inject({ method: "POST", url: "/mpi/jobs", headers, payload: { name: "unsafe", program: "/tmp/run.sh", processCount: 2, command: "whoami" } });
+    expect(unsafe.statusCode).toBe(400);
+    const valid = await app.inject({ method: "POST", url: "/mpi/jobs", headers, payload: { name: "matrix test", program: "matrix-multiply", processCount: 2 } });
+    expect(valid.statusCode).toBe(201);
+    expect(valid.json().status).toBe("queued");
+    const cancelled = await app.inject({ method: "POST", url: `/mpi/jobs/${valid.json().id}/cancel`, headers });
+    expect(cancelled.statusCode).toBe(204);
+  });
 });

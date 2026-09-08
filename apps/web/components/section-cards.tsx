@@ -20,7 +20,7 @@ const toneClasses = {
 
 export function SectionCards({ metrics }: { metrics: DashboardMetric[] }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {metrics.map((metric) => (
         <Card key={metric.label} className="shadow-none">
           <CardContent className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 p-5">

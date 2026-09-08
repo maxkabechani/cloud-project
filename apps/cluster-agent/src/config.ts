@@ -7,6 +7,9 @@ const configSchema = z.object({
   OPENNEBULA_ENDPOINT: z.string().url().optional(),
   OPENNEBULA_USERNAME: z.string().optional(),
   OPENNEBULA_PASSWORD: z.string().optional(),
+  MPI_USER: z.string().default("mpiuser"),
+  MPI_HOSTFILE: z.string().optional(),
+  MPI_PROGRAM_DIRECTORY: z.string().optional(),
 });
 
 export type AgentConfig = z.infer<typeof configSchema>;
