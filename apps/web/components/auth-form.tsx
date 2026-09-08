@@ -58,25 +58,20 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           <span>{APP_NAME}</span>
         </div>
         <div className="aside-copy">
-          <span className="eyebrow">UNIVERSITY COMPUTING</span>
+          <span className="eyebrow">UNIVERSITY HPC WORKSPACE</span>
           <h1>
-            Your research.
+            Your cluster.
             <br />
-            More possibility.
+            One shared workspace.
           </h1>
-          <p>A shared workspace for your Beowulf cluster.</p>
-          <div className="cluster-map" aria-hidden="true">
-            <span>MASTER</span>
-            <div>
-              <i>01</i>
-              <i>02</i>
-              <i>03</i>
-            </div>
+          <p>A secure control plane for the Beowulf cluster.</p>
+          <div className="group-badge" aria-label="Group 3 Beowulf Cluster Project">
+            <strong>GROUP 3</strong>
+            <span>Beowulf Cluster Project</span>
           </div>
         </div>
         <div className="aside-footer">
-          <ShieldCheck size={17} /> Your individual account. A shared research
-          community.
+          <ShieldCheck size={17} /> Your individual account. Shared cluster access.
         </div>
       </aside>
       <section className="auth-main">
@@ -85,7 +80,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           {APP_NAME}
         </div>
         <div className="auth-card">
-          <span className="eyebrow">MEMBER ACCESS</span>
+          <span className="eyebrow">GROUP 3 · MEMBER ACCESS</span>
           <h2>{register ? "Create your account" : "Welcome back"}</h2>
           <p className="muted">
             {register
@@ -158,7 +153,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           </p>
         </div>
         <footer className="auth-footer">
-          Beowulf Cluster Project <span>Research starts here.</span>
+          Beowulf Cluster Project <span>Group 3 · HPC Cloud</span>
         </footer>
       </section>
     </main>

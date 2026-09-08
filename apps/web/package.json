@@ -10,16 +10,17 @@
   },
   "dependencies": {
     "@hpc/shared": "workspace:*",
+    "@radix-ui/react-slot": "latest",
     "@tanstack/react-query": "latest",
     "better-auth": "latest",
+    "class-variance-authority": "latest",
+    "clsx": "latest",
+    "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "lucide-react": "latest",
-    "class-variance-authority": "latest",
-    "clsx": "latest",
-    "tailwind-merge": "latest",
-    "@radix-ui/react-slot": "latest"
+    "sonner": "^2.0.8",
+    "tailwind-merge": "latest"
   },
   "devDependencies": {
     "@types/react": "latest",
