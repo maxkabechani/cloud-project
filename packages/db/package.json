@@ -1,0 +1,24 @@
+{
+  "name": "@hpc/db",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts",
+    "./schema/sqlite": "./src/schema.sqlite.ts",
+    "./migrations": "./src/migrations.ts"
+  },
+  "scripts": {
+    "generate": "bun run generate:sqlite && bun run generate:postgres",
+    "migrate": "bun --env-file=../../apps/api/.env src/migrate.ts",
+    "generate:sqlite": "bunx --bun drizzle-kit generate --config=drizzle.sqlite.config.ts",
+    "generate:postgres": "bunx --bun drizzle-kit generate --config=drizzle.config.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "latest",
+    "postgres": "latest"
+  },
+  "devDependencies": {
+    "drizzle-kit": "latest"
+  }
+}

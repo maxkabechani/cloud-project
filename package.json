@@ -1,0 +1,33 @@
+{
+  "name": "hpc-cloud",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --parallel --filter @hpc/web --filter @hpc/api dev",
+    "typecheck": "bun --bun tsc --noEmit && bun run --filter @hpc/web typecheck",
+    "lint": "bun --bun eslint .",
+    "test": "bun test",
+    "build": "bun run --filter @hpc/web build",
+    "db:generate": "bun run --filter @hpc/db generate",
+    "db:migrate": "bun run --filter @hpc/db migrate",
+    "db:seed": "bun --env-file=apps/api/.env apps/api/src/seed.ts",
+    "format": "bun --bun prettier --write .",
+    "setup:local": "bun scripts/setup-local.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "latest",
+    "eslint": "latest",
+    "typescript": "^6.0.0",
+    "typescript-eslint": "latest",
+    "@electric-sql/pglite": "latest",
+    "@hpc/db": "workspace:*",
+    "drizzle-orm": "0.45.2",
+    "prettier": "latest"
+  }
+}

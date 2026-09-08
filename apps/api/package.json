@@ -1,0 +1,21 @@
+{
+  "name": "@hpc/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts"
+  },
+  "dependencies": {
+    "@hpc/db": "workspace:*",
+    "@hpc/shared": "workspace:*",
+    "@better-auth/drizzle-adapter": "latest",
+    "@fastify/cors": "latest",
+    "@fastify/helmet": "latest",
+    "@fastify/rate-limit": "latest",
+    "better-auth": "latest",
+    "drizzle-orm": "latest",
+    "fastify": "latest",
+    "zod": "latest"
+  }
+}

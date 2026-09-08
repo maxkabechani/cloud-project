@@ -1,0 +1,5 @@
+{
+  "name": "@hpc/config",
+  "private": true,
+  "type": "module"
+}
