@@ -2,20 +2,20 @@ import type { CloudUser, ClusterNode, MpiJob, MpiProgram, VirtualMachine } from 
 import { randomUUID } from "node:crypto";
 
 export interface AgentProvider {
-  status(): { status: "online"; provider: "mock"; lastSuccessfulConnection: string };
-  nodes(): ClusterNode[];
-  users(): CloudUser[];
-  createUser(input: { username: string; name: string }): CloudUser;
-  vms(): VirtualMachine[];
-  createVm(input: { name: string; image: string; cpu: number; memoryMb: number; diskGb: number; ownerId: string; ownerName: string }): VirtualMachine;
-  vm(id: string): VirtualMachine | undefined;
-  vmAction(id: string, action: "start" | "stop" | "reboot"): VirtualMachine | undefined;
-  deleteVm(id: string): boolean;
-  jobs(): MpiJob[];
-  createJob(input: { name: string; program: MpiJob["program"]; processCount: number; userId: string; userName: string }): MpiJob;
-  job(id: string): MpiJob | undefined;
-  cancelJob(id: string): boolean;
-  programs(): MpiProgram[];
+  status(): Promise<{ status: "online"; provider: "opennebula" | "mock"; lastSuccessfulConnection: string }> | { status: "online"; provider: "opennebula" | "mock"; lastSuccessfulConnection: string };
+  nodes(): Promise<ClusterNode[]> | ClusterNode[];
+  users(): Promise<CloudUser[]> | CloudUser[];
+  createUser(input: { username: string; name: string }): Promise<CloudUser> | CloudUser;
+  vms(): Promise<VirtualMachine[]> | VirtualMachine[];
+  createVm(input: { name: string; image: string; cpu: number; memoryMb: number; diskGb: number; placement?: "automatic" | "manual"; nodeId?: string; ownerId: string; ownerName: string }): Promise<VirtualMachine> | VirtualMachine;
+  vm(id: string): Promise<VirtualMachine | undefined> | VirtualMachine | undefined;
+  vmAction(id: string, action: "start" | "stop" | "reboot"): Promise<VirtualMachine | undefined> | VirtualMachine | undefined;
+  deleteVm(id: string): Promise<boolean> | boolean;
+  jobs(): Promise<MpiJob[]> | MpiJob[];
+  createJob(input: { name: string; program: MpiJob["program"]; processCount: number; userId: string; userName: string }): Promise<MpiJob> | MpiJob;
+  job(id: string): Promise<MpiJob | undefined> | MpiJob | undefined;
+  cancelJob(id: string): Promise<boolean> | boolean;
+  programs(): Promise<MpiProgram[]> | MpiProgram[];
 }
 
 export class MockAgentProvider implements AgentProvider {
